@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://h33m8ekwdwei"]
+
+[ext_resource type="Texture2D" uid="uid://iw0kvaiue7af" path="res://icon.svg" id="1_a202f"]
+
+[node name="Node3D" type="Node3D"]
+transform = Transform3D(-0.000907584, 0, -1, 0, 1, 0, 1, 0, -0.000907584, 0, 0, 0)
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+
+[node name="Sprite3D" type="Sprite3D" parent="CharacterBody3D/CollisionShape3D"]
+texture = ExtResource("1_a202f")
