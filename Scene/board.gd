@@ -18,6 +18,9 @@ const B_PAWN = preload("res://Chess Asset/pixel chess_v1.2/16x32 pieces/B_Pawn.p
 const B_QUEEN = preload("res://Chess Asset/pixel chess_v1.2/16x32 pieces/B_Queen.png")
 const B_ROOK = preload("res://Chess Asset/pixel chess_v1.2/16x32 pieces/B_Rook.png")
 
+const BLACK_TURN_DOT = preload("res://Chess Asset/pixel chess_v1.2/32x32 pieces/Black-Turn-Dot.png")
+const WHITE_TURN_DOT = preload("res://Chess Asset/pixel chess_v1.2/32x32 pieces/White-Turn-Dot.png")
+
 @onready var pieces: Node2D = $Pieces
 @onready var dot: Node2D = $Dot
 @onready var turn: Sprite2D = $Turn
