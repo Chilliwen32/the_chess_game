@@ -13,3 +13,4 @@ script = ExtResource("2_awbcf")
 [node name="Dot" type="Node2D" parent="."]
 
 [node name="Turn" type="Sprite2D" parent="."]
+position = Vector2(-100, 0)
