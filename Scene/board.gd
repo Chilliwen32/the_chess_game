@@ -79,6 +79,7 @@ func display_board():
 			var holder = TEXTURE_HOLDER.instantiate()
 			pieces.add_child(holder)
 			holder.global_position = Vector2(j * CELL_WIDTH + (CELL_WIDTH / 2)+8, -i * CELL_WIDTH - (CELL_WIDTH / 2)-16)
+			holder.z_index = 100 - i # higher z_index draws above
 			
 			match board[i][j]:
 				-6: holder.texture = B_KING
