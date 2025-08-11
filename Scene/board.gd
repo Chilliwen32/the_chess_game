@@ -67,15 +67,18 @@ func _input(event):
 			if if_mouse_out(): return
 			var var1 = snapped(get_global_mouse_position().x+8, 0) / 16
 			var var2 = abs(snapped(get_global_mouse_position().y-8, 0)) / 16
-			print(var1, "  ", var2)
+			if !state && (white && board[var2][var1] > 0 || white && board[var2][var1] < 0):
+				show_option()
+				selected_piece = Vector2(var2,var1)
+				state = true
 
 func if_mouse_out():
 	if get_global_mouse_position().x < 8 || get_global_mouse_position().x > 134 || get_global_mouse_position().y > 8 || get_global_mouse_position().y < -134:
 		return false
 
 func display_board():
-	for i in BOARD_SIZE:
-		for j in BOARD_SIZE:
+	for i in BOARD_SIZE: #
+		for j in BOARD_SIZE: #
 			var holder = TEXTURE_HOLDER.instantiate()
 			pieces.add_child(holder)
 			holder.global_position = Vector2(j * CELL_WIDTH + (CELL_WIDTH / 2)+8, -i * CELL_WIDTH - (CELL_WIDTH / 2)-16)
@@ -95,3 +98,19 @@ func display_board():
 				3: holder.texture = W_BISHOP
 				2: holder.texture = W_KNIGHT
 				1: holder.texture = W_PAWN
+
+func show_options():
+	moves = get_moves()
+	if moves == []:
+		state = false
+		return
+	show_dots()
+	
+func show_dots():
+	for i in moves:
+		var holder = TEXTURE_HOLDER.instantiate()
+		dots.add_child(holder)
+		holder.texture
+
+func get_moves():
+	pass
