@@ -30,70 +30,68 @@ const PIECE_MOVE = preload("res://Chess Asset/pixel chess_v1.2/32x32 pieces/Piec
 @onready var dots: Node2D = $Dot
 @onready var turn: Sprite2D = $Turn
 
-# board values:
-# -6 = black king, -5 queen, -4 rook, -3 bishop, -2 knight, -1 pawn
+#Variable
+# -6 = black king
+# -5 = black queen
+# -4 = black rook
+# -3 = black bishop
+# -2 = black knight
+# -1 = black pawn
 # 0 = empty
-# 1 = white pawn, 2 knight, 3 bishop, 4 rook, 5 queen, 6 king
+# 6 = white king
+# 5 = white queen
+# 4 = white rook
+# 3 = white bishop
+# 2 = white knight
+# 1 = white pawn
 
-var board: Array = []
-var white: bool = true
-var state: bool = false
-var moves: Array = []
-var selected_piece := Vector2(-1, -1)
+var board : Array
+var white : bool
+var state : bool
+var moves = []
+var selected_piece : Vector2
 
 func _ready():
-	board = [
-		[4, 2, 3, 5, 6, 3, 2, 4],
-		[1, 1, 1, 1, 1, 1, 1, 1],
-		[0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0],
-		[-1,-1,-1,-1,-1,-1,-1,-1],
-		[-4,-2,-3,-6,-5,-3,-2,-4]
-	]
+	board.append([4, 2, 3, 5, 6, 3, 2, 4])
+	board.append([1, 1, 1, 1, 1, 1, 1, 1])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([-1, -1, -1, -1, -1, -1, -1, -1])
+	board.append([-4, -2, -3, -6, -5, -3, -2, -4])
+	
 	display_board()
-
+	
 func _input(event):
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var mouse = get_global_mouse_position()
-		# bounds check (same as your original idea)
-		if mouse.x < 8 or mouse.x > 134 or mouse.y > 8 or mouse.y < -134:
-			return
+	if event is InputEventMouseButton && event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if if_mouse_out(): return
+			var var1 = snapped(get_global_mouse_position().x+8, 0) / 16
+			var var2 = abs(snapped(get_global_mouse_position().y-8, 0)) / 16
+			
+			if !state && (white && board[var2][var1] > 0 || white && board[var2][var1] < 0):
+				show_options()
+				selected_piece = Vector2(var2,var1)
+				state = true
+			elif state: set_move(var2, var1)
+			
 
-		var var1 = int((mouse.x - 8) / CELL_WIDTH)                  # column (j)
-		var var2 = int((-mouse.y - 16) / CELL_WIDTH)                # row (i)
-		print_debug("click tile: ", var1, ",", var2, " mouse:", mouse)
-
-		if not state and ((white and board[var2][var1] > 0) or (not white and board[var2][var1] < 0)):
-			# set selection first, then compute moves
-			selected_piece = Vector2(var2, var1)
-			moves = get_moves(var2, var1)
-			if moves.size() == 0:
-				# no legal moves -> cancel
-				state = false
-				return
-			show_dots()
-			state = true
-		elif state:
-			set_move(var2, var1)
-
-func print_debug(msg, a = "", b = ""):
-	# small helper so we can easily turn debug on/off
-	print(str(msg) + str(a) + str(b))
+func if_mouse_out():
+	if get_global_mouse_position().x < 8 || get_global_mouse_position().x > 134 || get_global_mouse_position().y > 8 || get_global_mouse_position().y < -134:
+		return false
 
 func display_board():
 	for child in pieces.get_children():
 		child.queue_free()
 
-	for i in range(BOARD_SIZE):
-		for j in range(BOARD_SIZE):
+	for i in BOARD_SIZE: #
+		for j in BOARD_SIZE: #
 			var holder = TEXTURE_HOLDER.instantiate()
 			pieces.add_child(holder)
-			holder.global_position = Vector2(j * CELL_WIDTH + (CELL_WIDTH / 2) + 8,
-											 -i * CELL_WIDTH - (CELL_WIDTH / 2) - 16)
-			holder.z_index = 100 - i
-
+			holder.global_position = Vector2(j * CELL_WIDTH + (CELL_WIDTH / 2)+8, -i * CELL_WIDTH - (CELL_WIDTH / 2)-16)
+			holder.z_index = 100 - i # higher z_index draws above
+			
 			match board[i][j]:
 				-6: holder.texture = B_KING
 				-5: holder.texture = B_QUEEN
@@ -109,66 +107,34 @@ func display_board():
 				2: holder.texture = W_KNIGHT
 				1: holder.texture = W_PAWN
 
-func show_dots():
-	delete_dots()
-	for mv in moves:
-		var holder = Sprite2D.new()
-		holder.texture = PIECE_MOVE
-		holder.z_index = 1000  # ensure dots rendered above pieces
-		dots.add_child(holder)
-		holder.global_position = Vector2(mv.y * CELL_WIDTH + (CELL_WIDTH / 2) + 8,
-										 -mv.x * CELL_WIDTH - (CELL_WIDTH / 2) - 16)
-	print_debug("dots added:", dots.get_child_count())
+func show_options():
+	moves = get_moves()
+	if moves == []:
+		state = false
+		return
+	show_dots()
+
+func set_move(var2, var1):
+	for i in moves:
+		if i.x == var2 && i.y == var1:
+			board[var2][var1] = board[board[selected_piece.x][selected_piece.y]]
+			board[selected_piece.x][selected_piece.y] = 0
+			white = !white
+			display_board()
+			break
+		delete_dots()
+		state = false
 
 func delete_dots():
 	for child in dots.get_children():
 		child.queue_free()
 
-func set_move(var2, var1):
-	# var2 = target row, var1 = target column
-	for mv in moves:
-		if mv.x == var2 and mv.y == var1:
-			board[var2][var1] = board[selected_piece.x][selected_piece.y]
-			board[selected_piece.x][selected_piece.y] = 0
-			white = not white
-			display_board()
-			delete_dots()
-			state = false
-			moves.clear()
-			selected_piece = Vector2(-1, -1)
-			return
-	# if we get here, clicked a non-move tile -> cancel selection
-	delete_dots()
-	state = false
-	moves.clear()
-	selected_piece = Vector2(-1, -1)
+func show_dots():
+	for i in moves:
+		var holder = Sprite2D.new()
+		dots.add_child(holder)
+		holder.texture = PIECE_MOVE
+		holder.global_position = Vector2(i.y * CELL_WIDTH + (CELL_WIDTH / 2) + 8, -i.x * CELL_WIDTH + (CELL_WIDTH / 2) - 16)
 
-func get_moves(r, c):
-	var res: Array = []
-	var p = board[r][c]
-	if p == 1: # white pawn (moves up the board -> decreasing row index)
-		var forward = r - 1
-		if forward >= 0:
-			if board[forward][c] == 0:
-				res.append(Vector2(forward, c))
-				# double step from starting row (row==1 for white)
-				if r == 1 and board[r - 2][c] == 0:
-					res.append(Vector2(r - 2, c))
-			# captures
-			for dc in [-1, 1]:
-				var nc = c + dc
-				if nc >= 0 and nc < BOARD_SIZE and board[forward][nc] < 0:
-					res.append(Vector2(forward, nc))
-	elif p == -1: # black pawn (moves down -> increasing row index)
-		var forward_b = r + 1
-		if forward_b < BOARD_SIZE:
-			if board[forward_b][c] == 0:
-				res.append(Vector2(forward_b, c))
-				if r == 6 and board[r + 2][c] == 0:
-					res.append(Vector2(r + 2, c))
-			for dc in [-1, 1]:
-				var nc = c + dc
-				if nc >= 0 and nc < BOARD_SIZE and board[forward_b][nc] > 0:
-					res.append(Vector2(forward_b, nc))
-	# For now: other pieces not implemented -> return empty (you can expand similarly)
-	return res
+func get_moves():
+	pass
