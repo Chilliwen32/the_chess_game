@@ -30,6 +30,10 @@ const PIECE_MOVE = preload("res://Chess Asset/pixel chess_v1.2/32x32 pieces/Piec
 @onready var dots: Node2D = $Dot
 @onready var turn: Sprite2D = $Turn
 
+@onready var white_pieces: Control = $"../CanvasLayer/white_pieces"
+@onready var black_pieces: Control = $"../CanvasLayer/black_pieces"
+
+
 #Variable
 # -6 = black king
 # -5 = black queen
@@ -51,6 +55,8 @@ var state : bool = false
 var moves = []
 var selected_piece : Vector2
 
+var promotion_square = null
+
 func _ready():
 	board.append([4, 2, 3, 5, 6, 3, 2, 4])
 	board.append([1, 1, 1, 1, 1, 1, 1, 1])
@@ -63,8 +69,17 @@ func _ready():
 	
 	display_board()
 	
+	var white_buttons = get_tree().get_nodes_in_group("white_pieces")
+	var black_buttons = get_tree().get_nodes_in_group("black_pieces")
+	
+	for button in white_buttons:
+		button.pressed.connect(self._on_button_pressed.bind(button))
+		
+	for button in black_buttons:
+		button.pressed.connect(self._on_button_pressed.bind(button))
+
 func _input(event):
-	if event is InputEventMouseButton && event.pressed:
+	if event is InputEventMouseButton && event.pressed && promotion_square == null:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if is_mouse_out(): return
 			var var1 = (snapped(get_global_mouse_position().x+8, 0) / 16) - 1
@@ -122,6 +137,13 @@ func show_options():
 func set_move(var2, var1):
 	for i in moves:
 		if i.x == var2 && i.y == var1:
+			match board[selected_piece.x][selected_piece.y]:
+				1:
+					if i.x == 0:
+						promote(i)
+				-1:
+					if i.x == 7:
+						promote(i)
 			board[var2][var1] = board[selected_piece.x][selected_piece.y]
 			board[selected_piece.x][selected_piece.y] = 0
 			white = !white
@@ -129,6 +151,26 @@ func set_move(var2, var1):
 			break
 	delete_dots()
 	state = false
+
+func promote(_var : Vector2):
+	promotion_square = _var
+	white_pieces.visible = white
+	black_pieces.visible = !white
+
+func _on_button_pressed(button):
+	var num_char = int(button.name.substr(0, 1))
+	
+	#his version of the code
+	board[promotion_square.x][promotion_square.y] = -num_char if white else num_char
+	white_pieces.visible = false
+	black_pieces.visible = false
+	promotion_square = null
+	
+	#my own version on it (created this cuz I don't like the how the top one looks
+	#if white:
+		#board[promotion_square.x][promotion_square.y] = num_char
+	#else:
+		#board[promotion_square.x][promotion_square.y] = -num_char
 
 func delete_dots():
 	for child in dots.get_children():
