@@ -142,6 +142,7 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_p4j74")
 theme_override_styles/normal = SubResource("StyleBoxTexture_hiice")
 
 [node name="3" type="Button" parent="CanvasLayer/white_pieces" groups=["white_pieces"]]
+layout_mode = 0
 offset_left = 100.0
 offset_right = 200.0
 offset_bottom = 100.0
@@ -153,6 +154,7 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_pqe63")
 theme_override_styles/normal = SubResource("StyleBoxTexture_aam5o")
 
 [node name="4" type="Button" parent="CanvasLayer/white_pieces" groups=["white_pieces"]]
+layout_mode = 0
 offset_left = 200.0
 offset_right = 300.0
 offset_bottom = 100.0
@@ -164,6 +166,7 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_xw8bv")
 theme_override_styles/normal = SubResource("StyleBoxTexture_wimqa")
 
 [node name="5" type="Button" parent="CanvasLayer/white_pieces" groups=["white_pieces"]]
+layout_mode = 0
 offset_left = 300.0
 offset_right = 400.0
 offset_bottom = 100.0
@@ -191,6 +194,7 @@ grow_vertical = 2
 scale = Vector2(1.04152, 1)
 
 [node name="2" type="Button" parent="CanvasLayer/black_pieces" groups=["black_pieces"]]
+layout_mode = 0
 offset_right = 100.0
 offset_bottom = 100.0
 theme_override_styles/focus = SubResource("StyleBoxEmpty_0y2cb")
@@ -201,6 +205,7 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_mepbf")
 theme_override_styles/normal = SubResource("StyleBoxTexture_dvq1j")
 
 [node name="3" type="Button" parent="CanvasLayer/black_pieces" groups=["black_pieces"]]
+layout_mode = 0
 offset_left = 100.0
 offset_right = 200.0
 offset_bottom = 100.0
@@ -212,6 +217,7 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_mu7ye")
 theme_override_styles/normal = SubResource("StyleBoxTexture_2oiod")
 
 [node name="4" type="Button" parent="CanvasLayer/black_pieces" groups=["black_pieces"]]
+layout_mode = 0
 offset_left = 200.0
 offset_right = 300.0
 offset_bottom = 100.0
@@ -223,6 +229,7 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_b0nqf")
 theme_override_styles/normal = SubResource("StyleBoxTexture_ot48q")
 
 [node name="5" type="Button" parent="CanvasLayer/black_pieces" groups=["black_pieces"]]
+layout_mode = 0
 offset_left = 300.0
 offset_right = 400.0
 offset_bottom = 100.0

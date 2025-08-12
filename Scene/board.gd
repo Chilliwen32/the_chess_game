@@ -139,10 +139,10 @@ func set_move(var2, var1):
 		if i.x == var2 && i.y == var1:
 			match board[selected_piece.x][selected_piece.y]:
 				1:
-					if i.x == 0:
+					if i.x == 7:
 						promote(i)
 				-1:
-					if i.x == 7:
+					if i.x == 0:
 						promote(i)
 			board[var2][var1] = board[selected_piece.x][selected_piece.y]
 			board[selected_piece.x][selected_piece.y] = 0
@@ -165,7 +165,7 @@ func _on_button_pressed(button):
 	white_pieces.visible = false
 	black_pieces.visible = false
 	promotion_square = null
-	
+	display_board()
 	#my own version on it (created this cuz I don't like the how the top one looks
 	#if white:
 		#board[promotion_square.x][promotion_square.y] = num_char
